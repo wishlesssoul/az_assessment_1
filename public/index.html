@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clinical Site Onboarding</title>
+    <style>
+      :root {
+        --bg: #f3f6fb;
+        --panel: #ffffff;
+        --surface: #edf4ff;
+        --primary: #0f5bd7;
+        --primary-dark: #123d8f;
+        --secondary: #0a2045;
+        --success: #1d8f5f;
+        --warning: #d97706;
+        --danger: #b42318;
+        --text: #172033;
+        --muted: #667085;
+        --line: #dfe7f5;
+        --shadow: 0 12px 30px rgba(17, 24, 39, 0.08);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(180deg, #eff5ff 0%, #f8fafc 100%);
+        color: var(--text);
+      }
+
+      .app-shell {
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(223,231,245,0.9);
+        border-radius: 18px;
+        padding: 18px 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary), #6ca9ff);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .brand small {
+        color: var(--muted);
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .button {
+        border: none;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+
+      .button.primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      .button.success {
+        background: #dff7eb;
+        color: var(--success);
+      }
+
+      .button.warning {
+        background: #fff3de;
+        color: var(--warning);
+      }
+
+      .button.danger {
+        background: #ffe6e3;
+        color: var(--danger);
+      }
+
+      .button.secondary {
+        background: #eef3ff;
+        color: var(--primary-dark);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .sidebar {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+
+      .nav-group {
+        margin-bottom: 22px;
+      }
+
+      .nav-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text);
+        border-radius: 12px;
+        padding: 12px 12px;
+        text-align: left;
+        font-size: 0.98rem;
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+
+      .nav-item.active {
+        background: var(--surface);
+        border-color: #dfeaff;
+        color: var(--primary-dark);
+        font-weight: 700;
+      }
+
+      .nav-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: #edf5ff;
+        font-weight: 700;
+      }
+
+      .content {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 1.65rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #f8fbff, #eef6ff);
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 18px;
+      }
+
+      .stat-label {
+        font-size: 0.78rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-top: 8px;
+      }
+
+      .stat-trend {
+        margin-top: 8px;
+        color: var(--success);
+        font-size: 0.82rem;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        background: #fff;
+      }
+
+      .panel h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+      }
+
+      .pipeline {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .pipeline-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fafcff;
+      }
+
+      .status-chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .status-chip.approved { background: #dff7eb; color: var(--success); }
+      .status-chip.exception_required { background: #fff3de; color: var(--warning); }
+      .status-chip.rejected { background: #ffe6e3; color: var(--danger); }
+      .status-chip.submitted { background: #e8f1ff; color: var(--primary-dark); }
+
+      .two-col {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      label {
+        font-weight: 600;
+        color: var(--secondary);
+        display: grid;
+        gap: 8px;
+      }
+
+      input, select, textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fbfcff;
+        padding: 11px 12px;
+        font: inherit;
+        color: var(--text);
+      }
+
+      textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .checklist {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 14px;
+        margin-top: 8px;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--secondary);
+      }
+
+      .site-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .site-table th, .site-table td {
+        text-align: left;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      .site-table th {
+        color: var(--muted);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .clickable-row {
+        cursor: pointer;
+      }
+
+      .clickable-row:hover {
+        background: #f8fbff;
+      }
+
+      .pill-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .detail-card {
+        display: grid;
+        gap: 14px;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+      }
+
+      .mono {
+        font-family: "Consolas", monospace;
+      }
+
+      .adaptive-card {
+        background: #f9fbff;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+
+      .adaptive-header {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .fact {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .fact:last-child {
+        border-bottom: none;
+      }
+
+      .audit-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .audit-item {
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--primary);
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: #fbfcff;
+      }
+
+      .audit-item strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .empty {
+        color: var(--muted);
+        padding: 10px 0;
+      }
+
+      @media (max-width: 980px) {
+        .layout { grid-template-columns: 1fr; }
+        .dashboard-grid, .two-col, .field-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">C</div>
+          <div>
+            <h1>Clinical Site Onboarding</h1>
+            <small>Next-Gen Agentic RAG & Event-Driven</small>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="button secondary" id="seedButton">Load Sample</button>
+          <button class="button primary" id="newIntakeButton">New Intake</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <div class="nav-group">
+            <div class="nav-label">Overview</div>
+            <button class="nav-item active" data-screen="overview"><span class="nav-icon">◉</span>Dashboard</button>
+            <button class="nav-item" data-screen="intake"><span class="nav-icon">＋</span>Intake</button>
+            <button class="nav-item" data-screen="queue"><span class="nav-icon">▣</span>Workflow Queue</button>
+            <button class="nav-item" data-screen="approval"><span class="nav-icon">✓</span>Approval Review</button>
+            <button class="nav-item" data-screen="audit"><span class="nav-icon">⎘</span>Audit Trail</button>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-label">Operating Model</div>
+            <div class="panel" style="padding: 12px; background: #f8fbff;">
+              <div class="muted">Regional Director</div>
+              <div style="font-weight:700; margin-top:6px;">North America</div>
+              <div class="status-chip submitted" style="margin-top:10px;">SSO Ready</div>
+            </div>
+          </div>
+        </aside>
+
+        <main class="content">
+          <section id="screen-overview" class="screen active">
+            <div class="section-head">
+              <h2>Regional Dashboard</h2>
+              <button class="button success" id="overviewRefresh">Refresh Metrics</button>
+            </div>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="dashboard-grid">
+              <div class="panel">
+                <h3>Site Pipeline</h3>
+                <div class="pipeline" id="pipelineList"></div>
+              </div>
+              <div class="panel">
+                <h3>AI Compliance Summary</h3>
+                <div class="stack" id="summaryList"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="screen-intake" class="screen">
+            <div class="section-head">
+              <h2>Submit Site Intake</h2>
+            </div>
+            <div class="two-col">
+              <div class="panel">
+                <form id="siteForm">
+                  <div class="field-grid">
+                    <label>Site Code
+                      <input name="siteCode" value="US-4092" />
+                    </label>
+                    <label>Region
+                      <input name="region" value="North America" />
+                    </label>
+                    <label>Investigator
+                      <input name="investigator" value="Dr. Sarah Chen" />
+                    </label>
+                    <label>License Expiry (days)
+                      <input name="licenseExpiryDays" type="number" value="18" />
+                    </label>
+                  </div>
+
+                  <div>
+                    <label>Required Documents</label>
+                    <div class="checklist">
+                      <label class="check-item"><input type="checkbox" name="documents" value="cv" checked /> CV</label>
+                      <label class="check-item"><input type="checkbox" name="documents" value="nda" checked /> NDA</label>
+                      <label class="check-item"><input type="checkbox" name="documents" value="gcp" /> GCP Training</label>
+                      <label class="check-item"><input type="checkbox" name="documents" value="protocol" /> Protocol Access</label>
+                    </div>
+                  </div>
+
+                  <div class="field-grid">
+                    <label>Training Complete
+                      <select name="trainingComplete">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </label>
+                    <label>NDA Signed
+                      <select name="ndaSigned">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="pill-row">
+                    <button type="submit" class="button primary">Submit for AI Review</button>
+                    <button type="button" class="button secondary" id="fillSample">Use Sample Data</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="panel">
+                <h3>Submission Guidance</h3>
+                <div class="stack">
+                  <div class="detail-card">
+                    <div class="detail-row"><span class="muted">Processing path</span><strong>SharePoint → Vector ETL → RAG Review</strong></div>
+                    <div class="detail-row"><span class="muted">Primary review</span><strong>Clinical policy and credential validation</strong></div>
+                    <div class="detail-row"><span class="muted">Workflow engine</span><strong>Kafka-driven async decision routing</strong></div>
+                    <div class="detail-row"><span class="muted">Compliance</span><strong>21 CFR Part 11 audit ledger</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="screen-queue" class="screen">
+            <div class="section-head">
+              <h2>Workflow Queue</h2>
+            </div>
+            <div class="panel">
+              <table class="site-table">
+                <thead>
+                  <tr>
+                    <th>Site</th>
+                    <th>Investigator</th>
+                    <th>Region</th>
+                    <th>Status</th>
+                    <th>Risk</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody id="siteTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="screen-approval" class="screen">
+            <div class="section-head">
+              <h2>Approver Review</h2>
+            </div>
+            <div class="two-col">
+              <div class="panel">
+                <div id="approvalDetail" class="detail-card"></div>
+              </div>
+              <div class="panel">
+                <h3>Adaptive Card Preview</h3>
+                <div id="adaptiveCardPreview" class="adaptive-card"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="screen-audit" class="screen">
+            <div class="section-head">
+              <h2>Immutable Audit Ledger</h2>
+            </div>
+            <div class="panel">
+              <div id="auditList" class="audit-list"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const apiBase = 'http://localhost:3001/api';
+      const state = {
+        currentScreen: 'overview',
+        selectedSiteId: null
+      };
+
+      async function fetchJson(url, options = {}) {
+        const res = await fetch(url, {
+          headers: { 'Content-Type': 'application/json' },
+          ...options
+        });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || 'Request failed');
+        }
+        return res.json();
+      }
+
+      function setScreen(name) {
+        state.currentScreen = name;
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.toggle('active', item.dataset.screen === name);
+        });
+        document.querySelectorAll('.screen').forEach(screen => {
+          screen.classList.toggle('active', screen.id === `screen-${name}`);
+        });
+      }
+
+      function statusLabel(value) {
+        return value ? value.replace(/_/g, ' ') : 'unknown';
+      }
+
+      function renderOverview(sites) {
+        const total = sites.length;
+        const approved = sites.filter(site => site.status === 'approved').length;
+        const exceptions = sites.filter(site => site.status === 'exception_required').length;
+        const rejected = sites.filter(site => site.status === 'rejected').length;
+
+        const stats = [
+          { label: 'Total Sites', value: total, trend: '+12.4%' },
+          { label: 'Approved', value: approved, trend: '+8.2%' },
+          { label: 'Exceptions', value: exceptions, trend: '+2.1%' },
+          { label: 'Rejected', value: rejected, trend: '-1.5%' }
+        ];
+
+        document.getElementById('statsGrid').innerHTML = stats.map(card => `
+          <div class="stat-card">
+            <div class="stat-label">${card.label}</div>
+            <div class="stat-value">${card.value}</div>
+            <div class="stat-trend">${card.trend} vs last week</div>
+          </div>
+        `).join('');
+
+        document.getElementById('pipelineList').innerHTML = sites.length ? sites.slice(0, 5).map(site => `
+          <div class="pipeline-item clickable-row" data-site-id="${site.id}">
+            <div>
+              <strong>${site.siteCode}</strong><br />
+              <span class="muted">${site.investigator}</span>
+            </div>
+            <span class="status-chip ${site.status}">${statusLabel(site.status)}</span>
+          </div>
+        `).join('') : '<div class="empty">No site data yet.</div>';
+
+        document.querySelectorAll('[data-site-id]').forEach(item => {
+          item.addEventListener('click', () => {
+            state.selectedSiteId = item.dataset.siteId;
+            setScreen('approval');
+            renderApprovalDetail();
+          });
+        });
+
+        const summary = [
+          { title: 'Investigator credential validation', detail: 'RAG review matched 93% of policy vectors.' },
+          { title: 'Document intake backlog', detail: '12 files awaiting SharePoint ETL indexing.' },
+          { title: 'Approval latency', detail: 'Median turnaround is 4.2 hours for exception cases.' }
+        ];
+
+        document.getElementById('summaryList').innerHTML = summary.map(item => `
+          <div class="pipeline-item">
+            <div>
+              <strong>${item.title}</strong><br />
+              <span class="muted">${item.detail}</span>
+            </div>
+            <span class="status-chip approved">Healthy</span>
+          </div>
+        `).join('');
+      }
+
+      function renderQueue(sites) {
+        const tbody = document.getElementById('siteTableBody');
+
+        if (!sites.length) {
+          tbody.innerHTML = '<tr><td colspan="6"><div class="empty">No sites in workflow queue.</div></td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = sites.map(site => `
+          <tr class="clickable-row" data-site-id="${site.id}">
+            <td><strong>${site.siteCode}</strong></td>
+            <td>${site.investigator}</td>
+            <td>${site.region}</td>
+            <td><span class="status-chip ${site.status}">${statusLabel(site.status)}</span></td>
+            <td>${site.riskScore || 'N/A'}</td>
+            <td>${site.summary || 'Awaiting review'}</td>
+          </tr>
+        `).join('');
+
+        tbody.querySelectorAll('[data-site-id]').forEach(row => {
+          row.addEventListener('click', () => {
+            state.selectedSiteId = row.dataset.siteId;
+            setScreen('approval');
+            renderApprovalDetail();
+          });
+        });
+      }
+
+      function renderAdaptiveCard(site) {
+        const card = document.getElementById('adaptiveCardPreview');
+        const payload = site?.adaptiveCard || {
+          type: 'AdaptiveCard',
+          version: '1.4',
+          body: [{ type: 'TextBlock', text: 'No active exception card.' }],
+          actions: []
+        };
+
+        card.innerHTML = `
+          <div class="adaptive-header">⚠️ ${payload.body?.[0]?.text || 'Pending Compliance Approval'}</div>
+          <div class="fact"><span>Site</span><strong>${site?.siteCode || 'N/A'}</strong></div>
+          <div class="fact"><span>Investigator</span><strong>${site?.investigator || 'N/A'}</strong></div>
+          <div class="fact"><span>Risk</span><strong>${site?.riskScore || 'Medium'}</strong></div>
+          <div class="fact"><span>Action</span><strong>${payload.actions?.length ? payload.actions.map(a => a.title).join(' / ') : 'No action'}</strong></div>
+          <pre class="mono" style="margin-top:14px; white-space:pre-wrap; overflow:auto;">${JSON.stringify(payload, null, 2)}</pre>
+        `;
+      }
+
+      function renderApprovalDetail() {
+        const site = allSites.find(item => item.id === state.selectedSiteId) || allSites[0];
+        const detail = document.getElementById('approvalDetail');
+        if (!site) {
+          detail.innerHTML = '<div class="empty">No site selected.</div>';
+          renderAdaptiveCard(null);
+          return;
+        }
+
+        detail.innerHTML = `
+          <div class="detail-row"><span class="muted">Site ID</span><strong>${site.siteCode}</strong></div>
+          <div class="detail-row"><span class="muted">Investigator</span><strong>${site.investigator}</strong></div>
+          <div class="detail-row"><span class="muted">Region</span><strong>${site.region}</strong></div>
+          <div class="detail-row"><span class="muted">Status</span><strong><span class="status-chip ${site.status}">${statusLabel(site.status)}</span></strong></div>
+          <div class="detail-row"><span class="muted">Risk Score</span><strong>${site.riskScore || 'N/A'}</strong></div>
+          <div class="detail-row"><span class="muted">Document Set</span><strong>${(site.documents || []).join(', ')}</strong></div>
+          <div class="detail-row"><span class="muted">Vetting Summary</span><strong>${site.summary || 'Awaiting review'}</strong></div>
+          ${site.findings?.length ? `<div class="detail-row"><span class="muted">Findings</span><ul>${site.findings.map(f => `<li>${f}</li>`).join('')}</ul></div>` : ''}
+          <div class="pill-row" style="margin-top:12px;">
+            <button class="button success" data-decide="approve">Approve</button>
+            <button class="button warning" data-decide="updates_requested">Request Updates</button>
+            <button class="button danger" data-decide="reject">Reject</button>
+          </div>
+        `;
+
+        document.querySelectorAll('[data-decide]').forEach(button => {
+          button.addEventListener('click', async () => {
+            await submitDecision(site.id, button.dataset.decide);
+          });
+        });
+
+        renderAdaptiveCard(site);
+      }
+
+      function renderAuditTrail(auditLog) {
+        const container = document.getElementById('auditList');
+        if (!auditLog.length) {
+          container.innerHTML = '<div class="empty">No audit events recorded.</div>';
+          return;
+        }
+
+        container.innerHTML = auditLog.slice().reverse().map(item => `
+          <div class="audit-item">
+            <strong>${item.actionType}</strong>
+            <div class="muted">${item.actorId} • ${new Date(item.createdAt).toLocaleString()}</div>
+            <div class="muted">Site: ${item.siteId}</div>
+            <div style="margin-top:8px;">Signature: <span class="mono">${item.cryptographicSignature.slice(0, 18)}...</span></div>
+          </div>
+        `).join('');
+      }
+
+      async function submitDecision(siteId, action) {
+        const payload = { action, actorRole: 'Regional_Director', actorId: 'regional.director@clinic.io' };
+        const result = await fetchJson(`${apiBase}/sites/${siteId}/decision`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        await loadData();
+        state.selectedSiteId = result.site.id;
+        setScreen('audit');
+      }
+
+      async function loadData() {
+        try {
+          const { sites } = await fetchJson(`${apiBase}/sites`);
+          const { auditLog } = await fetchJson(`${apiBase}/audit-log`);
+          allSites = sites;
+          renderOverview(sites);
+          renderQueue(sites);
+          renderAuditTrail(auditLog);
+          if (!state.selectedSiteId && sites.length) {
+            state.selectedSiteId = sites[0].id;
+          }
+          if (state.currentScreen === 'approval') {
+            renderApprovalDetail();
+          }
+        } catch (error) {
+          console.error(error);
+          document.getElementById('auditList').innerHTML = '<div class="empty">Unable to load data.</div>';
+        }
+      }
+
+      document.querySelectorAll('.nav-item').forEach(button => {
+        button.addEventListener('click', () => {
+          setScreen(button.dataset.screen);
+          if (button.dataset.screen === 'approval') {
+            renderApprovalDetail();
+          }
+        });
+      });
+
+      document.getElementById('newIntakeButton').addEventListener('click', () => {
+        setScreen('intake');
+      });
+
+      document.getElementById('overviewRefresh').addEventListener('click', loadData);
+
+      document.getElementById('siteForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const payload = {
+          siteCode: formData.get('siteCode'),
+          investigator: formData.get('investigator'),
+          region: formData.get('region'),
+          licenseExpiryDays: Number(formData.get('licenseExpiryDays')),
+          documents: formData.getAll('documents'),
+          trainingComplete: formData.get('trainingComplete') === 'true',
+          ndaSigned: formData.get('ndaSigned') === 'true'
+        };
+
+        const result = await fetchJson(`${apiBase}/sites`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        state.selectedSiteId = result.site.id;
+        setScreen('approval');
+        await loadData();
+      });
+
+      document.getElementById('fillSample').addEventListener('click', () => {
+        const form = document.getElementById('siteForm');
+        form.siteCode.value = 'US-2047';
+        form.region.value = 'Western Europe';
+        form.investigator.value = 'Dr. Emily Ng';
+        form.licenseExpiryDays.value = '12';
+        form.trainingComplete.value = 'false';
+        form.ndaSigned.value = 'false';
+      });
+
+      document.getElementById('seedButton').addEventListener('click', async () => {
+        const result = await fetchJson(`${apiBase}/sites`, {
+          method: 'POST',
+          body: JSON.stringify({
+            siteCode: 'US-3048',
+            investigator: 'Dr. Amina Khan',
+            region: 'North America',
+            licenseExpiryDays: 9,
+            documents: ['cv', 'nda'],
+            trainingComplete: false,
+            ndaSigned: false
+          })
+        });
+        state.selectedSiteId = result.site.id;
+        setScreen('approval');
+        await loadData();
+      });
+
+      let allSites = [];
+      loadData();
+    </script>
+  </body>
+</html>

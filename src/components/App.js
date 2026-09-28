@@ -240,17 +240,48 @@ function bindEvents() {
 
   document.getElementById('newIntakeButton').addEventListener('click', () => setScreen('intake'));
   document.getElementById('seedButton').addEventListener('click', async () => {
-    const result = await api.createSite({
-      siteCode: 'US-3048',
-      investigator: 'Dr. Amina Khan',
-      region: 'North America',
-      licenseExpiryDays: 9,
-      documents: ['cv', 'nda'],
-      trainingComplete: false,
-      ndaSigned: false
-    });
-    state.selectedSiteId = result.site.id;
-    setScreen('approval');
+    const samples = [
+      {
+        siteCode: 'US-3048',
+        investigator: 'Dr. Amina Khan',
+        region: 'North America',
+        licenseExpiryDays: 9,
+        documents: ['cv', 'nda', 'gcp'],
+        trainingComplete: false,
+        ndaSigned: false
+      },
+      {
+        siteCode: 'US-8754',
+        investigator: 'Dr. Lucas Martin',
+        region: 'Europe',
+        licenseExpiryDays: 38,
+        documents: ['cv', 'nda', 'gcp', 'protocol'],
+        trainingComplete: true,
+        ndaSigned: true
+      },
+      {
+        siteCode: 'US-9291',
+        investigator: 'Dr. Helena Rossi',
+        region: 'APAC',
+        licenseExpiryDays: 17,
+        documents: ['cv', 'nda'],
+        trainingComplete: true,
+        ndaSigned: true
+      },
+      {
+        siteCode: 'US-1472',
+        investigator: 'Dr. John Patel',
+        region: 'Canada',
+        licenseExpiryDays: 61,
+        documents: ['cv', 'nda', 'gcp', 'protocol'],
+        trainingComplete: true,
+        ndaSigned: true
+      }
+    ];
+
+    const created = await Promise.all(samples.map((site) => api.createSite(site)));
+    state.selectedSiteId = created[0].site.id;
+    setScreen('queue');
     await loadData();
   });
 

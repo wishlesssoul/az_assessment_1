@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { getAllSites, getSiteById, getAuditEntries } from './data/siteStore.js';
+import { getAllSites, getSiteById, getAuditEntries, seedDemoData } from './data/siteStore.js';
 import { evaluateCompliance } from './services/complianceService.js';
 import { createSiteRecord, transitionSite } from './services/workflowService.js';
 
@@ -92,6 +92,8 @@ app.post('/api/sites/:id/decision', (req, res) => {
 
   return res.json({ site: result, message: summary });
 });
+
+seedDemoData();
 
 app.use(express.static(path.join(__dirname, '../public')));
 
